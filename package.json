@@ -1,7 +1,7 @@
 {
   "name": "tconsole",
   "private": true,
-  "description": "Render objects on the command line",
+  "description": "Render objects in the console",
   "author": "Falco Nogatz <fnogatz@gmail.com>",
   "version": "0.1.0",
   "keywords": [
