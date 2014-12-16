@@ -110,3 +110,7 @@ Object with functions to compute the value of the requested field. You can use a
 ### renderer.defaultFields
 
 Array of field names that are shown if the fields are not explicitly set. Optional, default is `Object.keys(renderer.fields)`.
+
+### renderer.horizontal
+
+tconsole will only use a horizontal table for array inputs. Use this boolean flag to print table headers for an object input too.

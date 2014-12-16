@@ -90,7 +90,7 @@ function fromObject(objects, input, type, fields) {
     return '';
   });
 
-  if (input instanceof Array) {
+  if (input instanceof Array || objects[type].horizontal) {
     var colAligns = [];
     fields.forEach(function(field, ix) {
       if (typeof field === 'object' && field.align)
