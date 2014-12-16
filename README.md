@@ -46,7 +46,7 @@ var personFields = {
 };
 
 var config = {
-  'single person': {
+  'person': {
     check: function() {
       return (this instanceof Person);
     },
@@ -57,11 +57,7 @@ var config = {
     ],
     vertical: true
   },
-  'array of persons': {
-    check: function() {
-      return (this instanceof Array && this[0] instanceof Person);
-    },
-    fields: personFields,
+  'array:person': {
     defaultFields: [
       'First',
       'Last',
@@ -78,7 +74,7 @@ var tconsole = require('tconsole')(config);
 // use 'single person' renderer
 tconsole.log(sirius);
 
-// use 'array of persons' renderer
+// use automatically derived 'array:person' renderer
 tconsole.log([ harry, sirius ]);
 
 // set the shown fields
@@ -97,9 +93,11 @@ var config = {
 };
 ```
 
+If you use tconsole with an array as input, it will automatically try to find an appropriate renderer all of the array elements. To configure the output for such an array you can add a config prefixed by `array:`.
+
 ### renderer.check()
 
-Function that is called on the given object to check if this renderer is appropriate. `this` bound to input. Required.
+Function that is called on the given object to check if this renderer is appropriate. `this` bound to input. If the input is an array, tconsole will run the `renderer.check` function on all array elements to determine the appropriate renderer.
 
 ### renderer.insert(table, fields)
 
@@ -107,12 +105,8 @@ Function that gets called on the given input to generate the table entries. `thi
 
 ### renderer.fields
 
-Object with functions to compute the value of the requested field. Required.
+Object with functions to compute the value of the requested field. You can use a string instead of function to get a constant value which is useful for table separators.
 
 ### renderer.defaultFields
 
 Array of field names that are shown if the fields are not explicitly set. Optional, default is `Object.keys(renderer.fields)`.
-
-### renderer.vertical
-
-Boolean value to mark a vertical table. Optional, default is false.

@@ -1,4 +1,7 @@
 module.exports = createConsole;
+module.exports.getCellContent = getCellContent;
+module.exports.insert = insert;
+
 
 var Table = require('cli-table');
 
@@ -14,7 +17,7 @@ function createConsole(objects) {
     else {
       oldLog(input);
     }
-  }
+  };
 
   // populate methods from console
   for (var key in console) {
@@ -37,14 +40,41 @@ function createConsole(objects) {
     oldLog.apply(this, args);
   };
 
+  // add .toString()
+  konsole.toString = function objectToString(input, fields) {
+    return toString(objects, input, fields);
+  };
+
   return konsole;
 }
 
 
 function toString(objects, input, fields) {
   for (var type in objects) {
-    if (objects[type].check.call(input))
+    if (objects[type].check && objects[type].check.call(input)) {
+      fields = fields || objects[type].defaultFields;
+
       return fromObject(objects, input, type, fields);
+    }
+  }
+
+  if (input instanceof Array) {
+    var satisfiesAll = false;
+
+    for (var type in objects) {
+      satisfiesAll = input.every(function(row) {
+        return objects[type].check.call(row);
+      });
+
+      if (satisfiesAll) {
+        if (!fields && objects['array:'+type])
+          fields = objects['array:'+type].defaultFields
+        if (!fields)
+          fields = objects[type].defaultFields;
+
+        return fromObject(objects, input, type, fields, true);
+      }
+    }
   }
 
   return false;
@@ -52,8 +82,6 @@ function toString(objects, input, fields) {
 
 
 function fromObject(objects, input, type, fields) {
-  fields = fields || objects[type].defaultFields;
-
   var fieldNames = fields.map(function(field) {
     if (typeof field === 'string')
       return field;
@@ -62,11 +90,7 @@ function fromObject(objects, input, type, fields) {
     return '';
   });
 
-  if (objects[type].vertical === true) {
-    // Vertical table
-    var table = new Table();
-  }
-  else {
+  if (input instanceof Array) {
     var colAligns = [];
     fields.forEach(function(field, ix) {
       if (typeof field === 'object' && field.align)
@@ -77,6 +101,10 @@ function fromObject(objects, input, type, fields) {
       head: objects[type].header ? objects[type].header(fieldNames, input) : fieldNames,
       colAligns: colAligns
     });
+  }
+  else {
+    // Vertical table
+    var table = new Table();
   }
 
   if (objects[type].insert) {
@@ -98,18 +126,37 @@ function fromObject(objects, input, type, fields) {
  */
 function insert(object, input, table, fields) {
   if (input instanceof Array) {
-    input.forEach(function addRow(entry) {
+    input.forEach(function addRow(entry, rowNo) {
       var tableRow = fields.map(function cell(fieldName) {
-        return object.fields[fieldName].call(entry) || '';
+        return getCellContent.call(entry, object.fields[fieldName], rowNo);
       });
       table.push(tableRow);
     });
   }
   else {
     fields.forEach(function addField(field) {
-      var tableRow = {}
-      tableRow[field] = object.fields[field].call(input) || '';
-      table.push(tableRow);
+      var cells = {};
+      cells[field] = getCellContent.call(input, object.fields[field]);
+      table.push(cells);
     });
   }
+}
+
+
+/**
+ * Get the content of a cell. `field` is the function or string 
+ *   to use. `this` should be bound to the actual entry.
+ * Additional parameters are forwarded to the function `field`.
+ * @param  {Function|String} field
+ * @return {String}
+ */
+function getCellContent(field) {
+  var entry = this;
+  var args = Array.prototype.slice.call(arguments, 1);
+
+  if (typeof field === 'string')
+    return field;
+  if (typeof field === 'function')
+    return field.apply(entry, args) || '';
+  return '';
 }
