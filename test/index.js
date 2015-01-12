@@ -18,7 +18,7 @@ var personFields = {
 
 var config = {
   'person': {
-    check: function() {
+    test: function() {
       return (this instanceof Person);
     },
     fields: personFields,

@@ -47,7 +47,7 @@ var personFields = {
 
 var config = {
   'person': {
-    check: function() {
+    test: function() {
       return (this instanceof Person);
     },
     fields: personFields,
@@ -95,9 +95,9 @@ var config = {
 
 If you use tconsole with an array as input, it will automatically try to find an appropriate renderer all of the array elements. To configure the output for such an array you can add a config prefixed by `array:`.
 
-### renderer.check()
+### renderer.test()
 
-Function that is called on the given object to check if this renderer is appropriate. `this` bound to input. If the input is an array, tconsole will run the `renderer.check` function on all array elements to determine the appropriate renderer.
+Function that is called on the given object to check if this renderer is appropriate. `this` bound to input. If the input is an array, tconsole will run the `renderer.test` function on all array elements to determine the appropriate renderer.
 
 ### renderer.insert(table, fields)
 

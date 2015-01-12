@@ -51,7 +51,7 @@ function createConsole(objects) {
 
 function toString(objects, input, fields) {
   for (var type in objects) {
-    if (objects[type].check && objects[type].check.call(input)) {
+    if (objects[type].test && objects[type].test.call(input)) {
       fields = fields || objects[type].defaultFields || Object.keys(objects[type].fields);
 
       return fromObject(objects, input, type, fields);
@@ -60,10 +60,16 @@ function toString(objects, input, fields) {
 
   if (input instanceof Array) {
     var satisfiesAll = false;
+    var tester;
 
     for (var type in objects) {
+      tester = objects[type].test;
+      if (!tester && /^array:/.test(type) && objects[type.replace(/^array:/, '')]) {
+        tester = objects[type.replace(/^array:/, '')].test;
+      }
+
       satisfiesAll = input.every(function(row) {
-        return objects[type].check.call(row);
+        return tester.call(row);
       });
 
       if (satisfiesAll) {
@@ -79,14 +85,20 @@ function toString(objects, input, fields) {
 
   if (typeof input === 'object') {
     var satisfiesAll = false;
+    var tester;
 
     var keys = Object.keys(input).filter(function(key) {
       return key[0] !== '_';
     });
 
     for (var type in objects) {
+      tester = objects[type].test;
+      if (!tester && /^array:/.test(type) && objects[type.replace(/^array:/, '')]) {
+        tester = objects[type.replace(/^array:/, '')].test;
+      }
+
       satisfiesAll = keys.every(function(key) {
-        return objects[type].check.call(input[key]);
+        return tester.call(input[key]);
       });
 
       if (satisfiesAll) {
