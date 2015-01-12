@@ -2,7 +2,7 @@
   "name": "tconsole",
   "description": "Render objects in the console",
   "author": "Falco Nogatz <fnogatz@gmail.com>",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "keywords": [
     "console",
     "color",
