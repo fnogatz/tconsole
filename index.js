@@ -77,6 +77,33 @@ function toString(objects, input, fields) {
     }
   }
 
+  if (typeof input === 'object') {
+    var satisfiesAll = false;
+
+    var keys = Object.keys(input).filter(function(key) {
+      return key[0] !== '_';
+    });
+
+    for (var type in objects) {
+      satisfiesAll = keys.every(function(key) {
+        return objects[type].check.call(input[key]);
+      });
+
+      if (satisfiesAll) {
+        if (!fields && objects['array:'+type])
+          fields = objects['array:'+type].defaultFields || Object.keys(objects['array:'+type].fields);
+        if (!fields)
+          fields = objects[type].defaultFields || Object.keys(objects[type].fields);
+
+        var arr = keys.map(function(key) {
+          return input[key];
+        });
+
+        return fromObject(objects, arr, type, fields);
+      }
+    }
+  }
+
   return false;
 }
 
