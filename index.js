@@ -150,7 +150,12 @@ function fromObject(objects, input, type, fields) {
     objects[type].insert.call(input, table, fieldNames);
   }
   else {
-    insert(objects[type], input, table, fieldNames);
+    if (!objects[type].fields && /^array:/.test(type)) {
+      insert(objects[type.replace(/^array:/, '')], input, table, fieldNames);
+    }
+    else {
+      insert(objects[type], input, table, fieldNames);
+    }
   }
 
   return table.toString();
