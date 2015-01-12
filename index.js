@@ -52,7 +52,7 @@ function createConsole(objects) {
 function toString(objects, input, fields) {
   for (var type in objects) {
     if (objects[type].check && objects[type].check.call(input)) {
-      fields = fields || objects[type].defaultFields;
+      fields = fields || objects[type].defaultFields || Object.keys(objects[type].fields);
 
       return fromObject(objects, input, type, fields);
     }
@@ -68,9 +68,9 @@ function toString(objects, input, fields) {
 
       if (satisfiesAll) {
         if (!fields && objects['array:'+type])
-          fields = objects['array:'+type].defaultFields
+          fields = objects['array:'+type].defaultFields || Object.keys(objects['array:'+type].fields);
         if (!fields)
-          fields = objects[type].defaultFields;
+          fields = objects[type].defaultFields || Object.keys(objects[type].fields);
 
         return fromObject(objects, input, type, fields, true);
       }
