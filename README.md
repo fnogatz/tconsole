@@ -1,6 +1,6 @@
 # tconsole
 
-![Screenshot](https://raw.github.com/fnogatz/tconsole/master/screenshot.png)
+![Screenshot](screenshot.png)
 
 tconsole is a drop-in replacement for node's default console that renders objects as tables in your terminal.
 
