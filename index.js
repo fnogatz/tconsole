@@ -136,8 +136,13 @@ function fromObject(objects, input, type, fields) {
         colAligns[ix] = field.align;
     });
 
+    var headers = objects[type].header ? objects[type].header(fieldNames, input) : fieldNames;
+    if (objects[type].horizontal) {
+      headers = false;
+    }
+
     var table = new Table({
-      head: objects[type].header ? objects[type].header(fieldNames, input) : fieldNames,
+      head: headers,
       colAligns: colAligns
     });
   }
