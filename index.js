@@ -243,7 +243,7 @@ function combine() {
   Array.prototype.forEach.call(arguments, function(tconsoleInstance) {
     mergeObject(config, tconsoleInstance._tconsoleConfig);
   });
-  return tconsole(config);
+  return createConsole(config);
 }
 
 
