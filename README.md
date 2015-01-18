@@ -114,3 +114,29 @@ Array of field names that are shown if the fields are not explicitly set. Option
 ### renderer.horizontal
 
 tconsole will only use a horizontal table for array inputs. Use this boolean flag to print table headers for an object input too.
+
+
+## Further tools to work with `tconsole`
+
+### Combine tconsole instances
+
+If you have multiple modules that provide tconsoles, you may want to use a single tconsole instance instead. By using `tconsole/combine` it is possible to merge to functionality of several tconsole instances:
+
+```
+var tconsole = require('tconsole');
+var konsole1 = tconsole(config1);
+var konsole2 = tconsole(config2);
+
+// merge the instances
+var konsole = tconsole.combine(konsole1, konsole2);
+// and use like before
+konsole.log(...);
+```
+
+### Load all renderers of a directory
+
+Load all renderers defined in separate files in a directory:
+
+```
+var tconsole = require('tconsole').load('./renderers');
+```

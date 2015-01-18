@@ -1,7 +1,8 @@
 module.exports = createConsole;
+module.exports.load = load;
+module.exports.combine = combine;
 module.exports.getCellContent = getCellContent;
 module.exports.insert = insert;
-module.exports.load = load;
 
 
 var Table = require('cli-table');
@@ -230,4 +231,28 @@ function load(location) {
   }
   var konsole = createConsole(config);
   return konsole;
+}
+
+
+/**
+ * Combine multiple tconsole instances.
+ * @return {tconsole}
+ */
+function combine() {
+  var config = {};
+  Array.prototype.forEach.call(arguments, function(tconsoleInstance) {
+    mergeObject(config, tconsoleInstance._tconsoleConfig);
+  });
+  return tconsole(config);
+}
+
+
+/**
+ * Merge properties of obj2 into obj1.
+ * @param  {Object} obj1
+ * @param  {Object} obj2
+ * @return {Object}
+ */
+function mergeObject(obj1, obj2){
+  for (var attrname in obj2) { obj1[attrname] = obj2[attrname]; }
 }
