@@ -211,8 +211,13 @@ function getCellContent(field) {
 
   if (typeof field === 'string')
     return field;
-  if (typeof field === 'function')
-    return field.apply(entry, args) || '';
+  if (typeof field === 'function') {
+    var value = field.apply(entry, args);
+    if (value === undefined || value === null) 
+      return '';
+    
+    return value.toString();
+  }
   return '';
 }
 
