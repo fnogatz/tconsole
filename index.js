@@ -1,9 +1,11 @@
 module.exports = createConsole;
 module.exports.getCellContent = getCellContent;
 module.exports.insert = insert;
+module.exports.load = load;
 
 
 var Table = require('cli-table');
+var requireAll = require('require-all');
 
 
 function createConsole(objects) {
@@ -44,6 +46,9 @@ function createConsole(objects) {
   konsole.toString = function objectToString(input, fields) {
     return toString(objects, input, fields);
   };
+
+  // save config
+  konsole._tconsoleConfig = objects;
 
   return konsole;
 }
@@ -208,4 +213,21 @@ function getCellContent(field) {
   if (typeof field === 'function')
     return field.apply(entry, args) || '';
   return '';
+}
+
+
+/**
+ * Create a console by requiring all renderers in a given
+ *   location.
+ * @param  {String} location Filesystem path to use with require-all
+ * @return {tconsole}
+ */
+function load(location) {
+  var required = requireAll(location);
+  var config = {};
+  for (var key in required) {
+    config[key.replace(/^array\./, 'array:')] = required[key];
+  }
+  var konsole = createConsole(config);
+  return konsole;
 }
