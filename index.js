@@ -212,7 +212,12 @@ function getCellContent(field) {
   if (typeof field === 'string')
     return field;
   if (typeof field === 'function') {
-    var value = field.apply(entry, args);
+    var value;
+    try {
+      value = field.apply(entry, args);
+    } catch (e) {
+      value = '(err)';
+    }
     if (value === undefined || value === null) 
       return '';
     
