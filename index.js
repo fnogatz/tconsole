@@ -3,6 +3,8 @@ module.exports.load = load;
 module.exports.combine = combine;
 module.exports.getCellContent = getCellContent;
 module.exports.insert = insert;
+module.exports.insert.Array = insertArray;
+module.exports.insert.Object = insertObject;
 
 
 var Table = require('cli-table');
@@ -135,7 +137,7 @@ function fromObject(objects, input, type, fields) {
     return '';
   });
 
-  if (input instanceof Array || objects[type].horizontal) {
+  if (input instanceof Array || objects[type].headers) {
     var colAligns = [];
     fields.forEach(function(field, ix) {
       if (typeof field === 'object' && field.align)
@@ -143,9 +145,6 @@ function fromObject(objects, input, type, fields) {
     });
 
     var headers = objects[type].header ? objects[type].header(fieldNames, input) : fieldNames;
-    if (objects[type].horizontal) {
-      headers = false;
-    }
 
     var table = new Table({
       head: headers,
@@ -158,14 +157,14 @@ function fromObject(objects, input, type, fields) {
   }
 
   if (objects[type].insert) {
-    objects[type].insert.call(input, table, fieldNames);
+    objects[type].insert.call(input, table, objects[type], fieldNames);
   }
   else {
     if (!objects[type].fields && /^array:/.test(type)) {
-      insert(objects[type.replace(/^array:/, '')], input, table, fieldNames);
+      insert.call(input, table, objects[type.replace(/^array:/, '')], fieldNames);
     }
     else {
-      insert(objects[type], input, table, fieldNames);
+      insert.call(input, table, objects[type], fieldNames);
     }
   }
 
@@ -174,27 +173,57 @@ function fromObject(objects, input, type, fields) {
 
 
 /**
- * Default renderer.insert function.
- * @param {Any} input
- * @param  {Table} table  cli-table
- * @param  {Array} fields fields to show
+ * Default renderer.insert function, `this` bound to the input.
+ * @param  {Table} table       cli-table
+ * @param  {Object} object     renderer object
+ * @param  {Array} fields      fields to show
  */
-function insert(object, input, table, fields) {
+function insert(table, object, fields) {
+  var input = this;
+
   if (input instanceof Array) {
-    input.forEach(function addRow(entry, rowNo) {
-      var tableRow = fields.map(function cell(fieldName) {
-        return getCellContent.call(entry, object.fields[fieldName], rowNo);
-      });
-      table.push(tableRow);
-    });
+    insertArray.call(input, table, object, fields);
   }
   else {
-    fields.forEach(function addField(field) {
-      var cells = {};
-      cells[field] = getCellContent.call(input, object.fields[field]);
-      table.push(cells);
-    });
+    insertObject.call(input, table, object, fields);
   }
+}
+
+
+/**
+ * renderer.insert function for rendering arrays,
+ *   `this` bound to the input.
+ * @param  {Table} table       cli-table
+ * @param  {Object} object     renderer object
+ * @param  {Array} fields      fields to show
+ */
+function insertArray(table, object, fields) {
+  var input = this;
+
+  input.forEach(function addRow(entry, rowNo) {
+    var tableRow = fields.map(function cell(fieldName) {
+      return getCellContent.call(entry, object.fields[fieldName], rowNo);
+    });
+    table.push(tableRow);
+  });
+}
+
+
+/**
+ * renderer.insert function for rendering objects,
+ *   `this` bound to the input.
+ * @param  {Table} table       cli-table
+ * @param  {Object} object     renderer object
+ * @param  {Array} fields      fields to show
+ */
+function insertObject(table, object, fields) {
+  var input = this;
+
+  fields.forEach(function addField(field) {
+    var cells = {};
+    cells[field] = getCellContent.call(input, object.fields[field]);
+    table.push(cells);
+  });
 }
 
 

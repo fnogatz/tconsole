@@ -73,7 +73,7 @@ test('has same footprint as console', function(t) {
   var konsole = tconsole({});
 
   for (var key in console) {
-    t.ok(konsole.hasOwnProperty(key));
+    t.ok(konsole.hasOwnProperty(key), 'has .'+key+' property');
   }
 
   t.end();
