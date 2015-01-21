@@ -113,7 +113,7 @@ Array of field names that are shown if the fields are not explicitly set. Option
 
 ### renderer.headers
 
-tconsole will print by default print table headers only for array inputs. Use this boolean flag to set it explicitly.
+tconsole will print table headers by default only for array inputs. Use this boolean flag to set it explicitly.
 
 
 ## Further tools to work with `tconsole`
