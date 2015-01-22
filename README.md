@@ -26,7 +26,7 @@ console.log(new Person('Harry', 'Potter'));
 console(new Person('Sirius', 'Black'), [ 'First', 'Last' ]);
 ```
 
-tconsole only modifies the predefined `console.log` method to check if there is a special rendering for the given objects. Call `console(object, fields)` to specify which fields should be printed.
+tconsole only modifies the predefined `console.log` method to check if there is a special rendering for the given objects. Call `console(object, fields)` to specify which fields should be printed. Use `'*'` for `fields` to print all available fields.
 
 
 ## Example

@@ -61,6 +61,8 @@ function toString(objects, input, fields) {
   for (var type in objects) {
     if (objects[type].test && objects[type].test.call(input)) {
       fields = fields || objects[type].defaultFields || Object.keys(objects[type].fields);
+      if (fields === '*')
+        fields = Object.keys(objects[type].fields);
 
       return fromObject(objects, input, type, fields);
     }
