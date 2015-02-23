@@ -99,7 +99,7 @@ If you use tconsole with an array as input, it will automatically try to find an
 
 Function that is called on the given object to check if this renderer is appropriate. `this` bound to input. If the input is an array, tconsole will run the `renderer.test` function on all array elements to determine the appropriate renderer.
 
-### renderer.insert(table, fields)
+### renderer.insert(table, renderer, fields)
 
 Function that gets called on the given input to generate the table entries. `this` bound to input. Optional, default loops over all elements.
 
