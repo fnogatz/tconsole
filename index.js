@@ -103,8 +103,13 @@ function toString(objects, input, fields) {
 
     for (var type in objects) {
       tester = objects[type].test;
-      if (!tester && /^array:/.test(type) && objects[type.replace(/^array:/, '')]) {
-        tester = objects[type.replace(/^array:/, '')].test;
+      if (!tester) {
+        if (/^array:/.test(type) && objects[type.replace(/^array:/, '')]) {      
+          tester = objects[type.replace(/^array:/, '')].test;
+        }
+        else {
+          throw new Error('No tester for type '+type);
+        }
       }
 
       satisfiesAll = keys.every(function(key) {
