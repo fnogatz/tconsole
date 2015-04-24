@@ -16,7 +16,7 @@ function createConsole (objects) {
     var str = toString(objects, input, fields)
     if (str) {
       oldLog(str)
-    } else {
+    } else if (str !== false) {
       oldLog(input)
     }
   }
@@ -34,7 +34,7 @@ function createConsole (objects) {
       str = toString(objects, arguments[i])
       if (str) {
         oldLog(str)
-      } else {
+      } else if (str !== false) {
         args.push(arguments[i])
       }
     }
@@ -157,15 +157,18 @@ function fromObject (objects, input, type, fields) {
     table = new Table()
   }
 
+  var retInsert
   if (objects[type].insert) {
-    objects[type].insert.call(input, table, objects[type], fieldNames)
+    retInsert = objects[type].insert.call(input, table, objects[type], fieldNames)
   } else {
     if (!objects[type].fields && /^array:/.test(type)) {
-      insert.call(input, table, objects[type.replace(/^array:/, '')], fieldNames)
+      retInsert = insert.call(input, table, objects[type.replace(/^array:/, '')], fieldNames)
     } else {
-      insert.call(input, table, objects[type], fieldNames)
+      retInsert = insert.call(input, table, objects[type], fieldNames)
     }
   }
+  if (retInsert === false)
+    return false
 
   return table.toString()
 }
