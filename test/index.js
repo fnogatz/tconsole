@@ -1,6 +1,6 @@
 var test = require('tap').test
 
-var tconsole = require('../index')
+var tconsole = require('../lib/index')
 var combine = tconsole.combine
 
 function Person (first, last, age) {
