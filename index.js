@@ -57,8 +57,9 @@ function toString (objects, input, fields) {
   for (type in objects) {
     if (objects[type].test && objects[type].test.call(input)) {
       fields = fields || objects[type].defaultFields || Object.keys(objects[type].fields)
-      if (fields === '*')
+      if (fields === '*') {
         fields = Object.keys(objects[type].fields)
+      }
 
       return fromObject(objects, input, type, fields)
     }
@@ -80,10 +81,12 @@ function toString (objects, input, fields) {
       })
 
       if (satisfiesAll) {
-        if (!fields && objects['array:' + type])
+        if (!fields && objects['array:' + type]) {
           fields = objects['array:' + type].defaultFields || Object.keys(objects['array:' + type].fields)
-        if (!fields)
+        }
+        if (!fields) {
           fields = objects[type].defaultFields || Object.keys(objects[type].fields)
+        }
 
         return fromObject(objects, input, type, fields, true)
       }
@@ -112,10 +115,12 @@ function toString (objects, input, fields) {
       })
 
       if (satisfiesAll) {
-        if (!fields && objects['array:' + type])
+        if (!fields && objects['array:' + type]) {
           fields = objects['array:' + type].defaultFields || Object.keys(objects['array:' + type].fields)
-        if (!fields)
+        }
+        if (!fields) {
           fields = objects[type].defaultFields || Object.keys(objects[type].fields)
+        }
 
         var arr = keys.map(function (key) {
           return input[key]
@@ -131,10 +136,12 @@ function toString (objects, input, fields) {
 
 function fromObject (objects, input, type, fields) {
   var fieldNames = fields.map(function (field) {
-    if (typeof field === 'string')
+    if (typeof field === 'string') {
       return field
-    if (typeof field === 'object' && field.hasOwnProperty('name'))
+    }
+    if (typeof field === 'object' && field.hasOwnProperty('name')) {
       return field.name
+    }
     return ''
   })
 
@@ -142,8 +149,9 @@ function fromObject (objects, input, type, fields) {
   if (input instanceof Array || objects[type].headers) {
     var colAligns = []
     fields.forEach(function (field, ix) {
-      if (typeof field === 'object' && field.align)
+      if (typeof field === 'object' && field.align) {
         colAligns[ix] = field.align
+      }
     })
 
     var headers = objects[type].header ? objects[type].header(fieldNames, input) : fieldNames
@@ -167,8 +175,9 @@ function fromObject (objects, input, type, fields) {
       retInsert = insert.call(input, table, objects[type], fieldNames)
     }
   }
-  if (retInsert === false)
+  if (retInsert === false) {
     return false
+  }
 
   return table.toString()
 }
@@ -235,8 +244,9 @@ function getCellContent (field) {
   var entry = this
   var args = Array.prototype.slice.call(arguments, 1)
 
-  if (typeof field === 'string')
+  if (typeof field === 'string') {
     return field
+  }
   if (typeof field === 'function') {
     var value
     try {
@@ -244,8 +254,9 @@ function getCellContent (field) {
     } catch (e) {
       value = '(err)'
     }
-    if (value === undefined || value === null)
+    if (value === undefined || value === null) {
       return ''
+    }
 
     return value.toString()
   }
