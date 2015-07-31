@@ -4,7 +4,6 @@
 
 tconsole is a drop-in replacement for node's default console that renders objects as tables in your terminal.
 
-
 ## Installation
 
 Use NPM:
@@ -12,7 +11,6 @@ Use NPM:
 ```shell
 $ npm install tconsole
 ```
-
 
 ## How to use it
 
@@ -27,7 +25,6 @@ console(new Person('Sirius', 'Black'), [ 'First', 'Last' ]);
 ```
 
 tconsole only modifies the predefined `console.log` method to check if there is a special rendering for the given objects. Call `console(object, fields)` to specify which fields should be printed. Use `'*'` for `fields` to print all available fields.
-
 
 ## Example
 
@@ -81,7 +78,6 @@ tconsole.log([ harry, sirius ]);
 tconsole(harry, [ 'First', 'Last', 'Name' ]);
 ```
 
-
 ## Configuration
 
 The configuration object taken by tconsole is an attribute-value pair specifying the renderer objects. The name of the renderer does not matter at all.
@@ -115,12 +111,11 @@ Array of field names that are shown if the fields are not explicitly set. Option
 
 tconsole will print table headers by default only for array inputs. Use this boolean flag to set it explicitly.
 
-
 ## Further tools to work with `tconsole`
 
 ### Combine tconsole instances
 
-If you have multiple modules that provide tconsoles, you may want to use a single tconsole instance instead. By using `tconsole/combine` it is possible to merge to functionality of several tconsole instances:
+If you have multiple modules that provide tconsoles, you may want to use a single tconsole instance instead. By using `tconsole.combine` it is possible to merge the functionalities of several tconsole instances:
 
 ```
 var tconsole = require('tconsole');
